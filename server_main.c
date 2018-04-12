@@ -12,24 +12,68 @@
 #include <pthread.h>
 /*---------------------------------------------------------------- Headers }}}*/
 
-void *
-thr_fn(void *arg)
+#define MAX_PTHREAD 100
+#define CREATE_PTHREAD 3
+
+struct thread_pool
 {
-    // File I/O를 수행한다.
+    int tid;
+    int status;
+    // 0 idle / 1 working
+    int tid_a[CREATE_PTHREAD];
+};
+/*
+void *
+thr_read_fn(void *arg)
+{
+    // File I/O를 수행한다.(read)
 }
 
+void *
+thr_write_fn(void *arg)
+{
+    // File I/O를 수행한다.(write)
+}
+*/
+void *
+thr_wait(struct thread_pool *tp)
+{
+    static int i=0;
+
+    tp->tid = pthread_self();
+    tp->status = 0;
+    tp->tid_a[i]=tp->tid;
+    printf("%d번째 %d tid %d\n",i,tp->tid,tp->status);
+    ++i;
+    sleep(1);
+}
 
 int main(void)
 {
-    int err;
-
     printf("Program will start soon!!!\n");
+    // Thread pool
+    int i;
+    int err;
+    struct thread_pool tp;
+    pthread_t ntid;
+
+    if(CREATE_PTHREAD<MAX_PTHREAD)
+        for(i=0; i<CREATE_PTHREAD; i++)
+        {
+            err = pthread_create(&ntid, NULL, thr_wait, &tp);
+            if (err !=0)
+                printf("Cannot Create thread!!\n");
+            sleep(1);
+
+        }
+    else
+     printf("Too much for thread pool!!\n");
+
+
+
+
 // Control Thread는 IO Multiplexing을 하면서 request Message output message를 처리
 
-
-    err = pthread_create(&ntid, NULL, thr_fn, NULL);
-    if (err !=0)
-        printf("Cannot Create thread!!\n");
 
 
 
