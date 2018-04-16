@@ -15,6 +15,7 @@
 #define MAX_PTHREAD 100
 #define CREATE_PTHREAD 3
 
+// Linked list로 저장하는 것!
 struct thread_pool
 {
     int tid;
