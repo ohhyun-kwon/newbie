@@ -15,6 +15,19 @@
 #define MAX_PTHREAD 100
 #define CREATE_PTHREAD 3
 
+
+struct thread_info
+{
+    int tid;
+    int status;
+    int fd[2];
+};
+
+struct thread_pool
+{
+    struct thread_info[CREATE_PTHREAD];
+};
+
 // Linked list로 저장하는 것!
 struct thread_pool
 {
@@ -23,6 +36,7 @@ struct thread_pool
     // 0 idle / 1 working
     int tid_a[CREATE_PTHREAD];
 };
+
 /*
 void *
 thr_read_fn(void *arg)
@@ -36,6 +50,7 @@ thr_write_fn(void *arg)
     // File I/O를 수행한다.(write)
 }
 */
+
 void *
 thr_wait(struct thread_pool *tp)
 {
@@ -49,11 +64,17 @@ thr_wait(struct thread_pool *tp)
     sleep(1);
 }
 
+void thr_get()
+{
+
+}
 int main(void)
 {
     printf("Program will start soon!!!\n");
     // Thread pool
     int i;
+    int j;
+    int k;
     int err;
     struct thread_pool tp;
     pthread_t ntid;
@@ -62,7 +83,7 @@ int main(void)
         for(i=0; i<CREATE_PTHREAD; i++)
         {
             err = pthread_create(&ntid, NULL, thr_wait, &tp);
-            if (err !=0)
+            if (err !=0
                 printf("Cannot Create thread!!\n");
             sleep(1);
 
@@ -70,13 +91,7 @@ int main(void)
     else
      printf("Too much for thread pool!!\n");
 
-
-
-
 // Control Thread는 IO Multiplexing을 하면서 request Message output message를 처리
-
-
-
 
 }
 
